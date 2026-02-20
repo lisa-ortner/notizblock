@@ -79,4 +79,17 @@ public class NoteHistoryRepository {
                 .setParameter("noteId", noteId)
                 .getSingleResult();
     }
+
+    /**
+     * Löscht alle History-Einträge für eine bestimmte Notiz
+     * @param noteId Die ID der Notiz
+     * @return Anzahl der gelöschten Einträge
+     */
+    @Transactional
+    public int deleteByNoteId(Long noteId) {
+        return entityManager.createQuery(
+                "DELETE FROM NoteHistory h WHERE h.note.id = :noteId")
+                .setParameter("noteId", noteId)
+                .executeUpdate();
+    }
 }

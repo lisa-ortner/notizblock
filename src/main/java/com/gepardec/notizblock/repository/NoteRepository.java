@@ -73,13 +73,16 @@ public class NoteRepository {
 
     /**
      * Löscht eine Notiz anhand ihrer ID
+     * Löscht zuerst alle zugehörigen History-Einträge, dann die Notiz selbst
      * @param id Die ID der zu löschenden Notiz
      */
     @Transactional
     public void delete(Long id) {
         findById(id).ifPresent(note -> {
-            // History-Eintrag für Löschen BEVOR die Notiz gelöscht wird
-            historyRepository.createHistoryEntry(note, ChangeType.DELETED);
+            // Erst alle History-Einträge löschen (Foreign Key Constraint)
+            historyRepository.deleteByNoteId(id);
+
+            // Dann die Notiz selbst löschen
             // Falls die Entity nicht managed ist, erst mergen
             if (!entityManager.contains(note)) {
                 note = entityManager.merge(note);
