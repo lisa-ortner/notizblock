@@ -1,0 +1,45 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/resources/components/layout/template.xhtml">
+
+    <ui:define name="title">Notizblock - Übersicht</ui:define>
+
+    <ui:define name="pageTitle">Notizblock Verwaltung</ui:define>
+
+    <ui:define name="content">
+        <h:form id="mainForm">
+            <p:panel>
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <h:outputText value="Anzahl Notizen: #{noteBean.notesCount}"
+                                      style="font-weight: bold; margin-right: 20px;"/>
+                    </p:toolbarGroup>
+
+                    <p:toolbarGroup align="right">
+                        <p:commandButton value="Neue Notiz"
+                                         icon="pi pi-plus"
+                                         styleClass="ui-button-success"
+                                         action="#{noteBean.prepareNewNote}"
+                                         update=":mainForm:noteDialogPanel"
+                                         oncomplete="PF('noteDialog').show();"
+                                         process="@this"/>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <!-- Growl für Benachrichtigungen -->
+                <p:growl id="messages" showDetail="true" life="3000"/>
+
+                <!-- Einbinden der DataTable-Komponente -->
+                <ui:include src="/resources/components/noteTable.xhtml"/>
+            </p:panel>
+
+            <!-- Einbinden der Dialog-Komponenten -->
+            <ui:include src="/resources/components/noteFormDialog.xhtml"/>
+            <ui:include src="/resources/components/deleteConfirmDialog.xhtml"/>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

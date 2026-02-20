@@ -1,0 +1,43 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+    <!-- Bestätigungs-Dialog für Löschen -->
+    <p:dialog id="deleteDialogPanel"
+              header="Notiz löschen"
+              widgetVar="deleteDialog"
+              modal="true"
+              resizable="false"
+              width="400"
+              showEffect="fade"
+              hideEffect="fade">
+
+        <h:panelGroup style="display: block; margin: 20px 0;">
+            <p:outputPanel style="display: flex; align-items: center;">
+                <i class="pi pi-exclamation-triangle" style="font-size: 3rem; color: #d32f2f; margin-right: 15px;"/>
+                <span style="font-size: 1.1em;">
+                    Möchten Sie die Notiz <strong>#{noteBean.currentNote.title}</strong> wirklich löschen?
+                </span>
+            </p:outputPanel>
+        </h:panelGroup>
+
+        <f:facet name="footer">
+            <p:commandButton value="Ja, löschen"
+                             icon="pi pi-check"
+                             styleClass="ui-button-danger"
+                             action="#{noteBean.deleteNote(noteBean.currentNote)}"
+                             update=":mainForm:notesTable :mainForm:messages"
+                             oncomplete="PF('deleteDialog').hide();"
+                             process="@this"/>
+
+            <p:commandButton value="Abbrechen"
+                             icon="pi pi-times"
+                             styleClass="ui-button-secondary"
+                             onclick="PF('deleteDialog').hide(); return false;"
+                             type="button"/>
+        </f:facet>
+    </p:dialog>
+
+</ui:composition>

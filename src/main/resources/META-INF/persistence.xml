@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+             https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="NotizblockPU" transaction-type="JTA">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- JTA Data Source -->
+        <jta-data-source>java:jboss/datasources/NotizblockDS</jta-data-source>
+
+        <!-- Entities -->
+        <class>com.gepardec.notizblock.entity.Note</class>
+        <class>com.gepardec.notizblock.entity.NoteHistory</class>
+
+        <properties>
+            <!-- H2 Database Connection Properties -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:notizblockdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"/>
+            <property name="jakarta.persistence.jdbc.user" value="sa"/>
+            <property name="jakarta.persistence.jdbc.password" value=""/>
+
+            <!-- Hibernate Properties -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+
+            <!-- DDL Auto: drop-and-create für Development -->
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+
+            <!-- SQL Logging (für Debugging) -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+
+            <!-- Weitere Hibernate Settings -->
+            <property name="hibernate.id.new_generator_mappings" value="true"/>
+            <property name="hibernate.connection.handling_mode" value="delayed_acquisition_and_release_after_transaction"/>
+        </properties>
+    </persistence-unit>
+
+</persistence>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title><ui:insert name="title">Notizblock</ui:insert></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
+    <ui:insert name="head"/>
+</h:head>
+
+<h:body>
+    <!-- Header -->
+    <p:panel style="margin: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <i class="pi pi-book" style="font-size: 2rem; margin-right: 15px;"/>
+                <h1 style="margin: 0; font-size: 1.8rem;">
+                    <ui:insert name="pageTitle">Notizblock Verwaltung</ui:insert>
+                </h1>
+            </div>
+            <div>
+                <p:button outcome="/index" value="Zur Übersicht" icon="pi pi-home"
+                          styleClass="ui-button-secondary" rendered="#{view.viewId != '/index.xhtml'}"/>
+            </div>
+        </div>
+    </p:panel>
+
+    <!-- Content Area -->
+    <div style="margin: 20px;">
+        <ui:insert name="content">
+            <!-- Hier wird der spezifische Content der Seite eingefügt -->
+        </ui:insert>
+    </div>
+
+    <!-- Footer -->
+    <p:panel style="margin: 20px; text-align: center; background-color: #f8f9fa; padding: 10px;">
+        <small>
+            Notizblock Webanwendung - Jakarta EE &amp; PrimeFaces |
+            <i class="pi pi-calendar"/> <h:outputText value="#{java.time.LocalDateTime.now()}">
+                <f:convertDateTime pattern="dd.MM.yyyy" type="localDateTime" xmlns:f="jakarta.faces.core"/>
+            </h:outputText>
+        </small>
+    </p:panel>
+</h:body>
+</html>

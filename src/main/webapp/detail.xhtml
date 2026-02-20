@@ -1,0 +1,195 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/resources/components/layout/template.xhtml">
+
+    <!-- ViewParameter für die Notiz-ID -->
+    <f:metadata>
+        <f:viewParam name="id" value="#{noteDetailBean.id}" required="true"/>
+        <f:viewAction action="#{noteDetailBean.init}"/>
+    </f:metadata>
+
+    <ui:define name="title">Notiz Details - #{noteDetailBean.note.title}</ui:define>
+
+    <ui:define name="pageTitle">Notiz Details</ui:define>
+
+    <ui:define name="content">
+        <h:form id="detailForm">
+            <!-- Growl für Benachrichtigungen -->
+            <p:growl id="messages" showDetail="true" life="3000"/>
+
+            <!-- Prüfen ob Notiz geladen wurde -->
+            <h:panelGroup rendered="#{noteDetailBean.hasNote()}">
+                <!-- Details der Notiz -->
+                <p:panel header="Notiz-Informationen" style="margin-bottom: 20px;">
+                    <p:toolbar>
+                        <p:toolbarGroup>
+                            <h:outputText value="ID: #{noteDetailBean.note.id}"
+                                          style="font-weight: bold; margin-right: 20px;"/>
+                        </p:toolbarGroup>
+
+                        <p:toolbarGroup align="right">
+                            <p:button outcome="index" value="Zurück zur Liste"
+                                      icon="pi pi-arrow-left"
+                                      styleClass="ui-button-secondary"
+                                      style="margin-right: 5px;"/>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+
+                    <h:panelGrid columns="2" style="width: 100%; margin-top: 20px;" columnClasses="detail-label,detail-value">
+                        <!-- Titel -->
+                        <p:outputLabel value="Titel:" style="font-weight: bold;"/>
+                        <h:outputText value="#{noteDetailBean.note.title}" style="font-size: 1.2em;"/>
+
+                        <!-- Erstellungsdatum -->
+                        <p:outputLabel value="Erstellt am:" style="font-weight: bold;"/>
+                        <h:outputText value="#{noteDetailBean.note.createdAt}">
+                            <f:convertDateTime pattern="dd.MM.yyyy HH:mm:ss" type="localDateTime"/>
+                        </h:outputText>
+
+                        <!-- Letztes Änderungsdatum -->
+                        <p:outputLabel value="Zuletzt geändert:" style="font-weight: bold;"/>
+                        <h:outputText value="#{noteDetailBean.note.updatedAt}">
+                            <f:convertDateTime pattern="dd.MM.yyyy HH:mm:ss" type="localDateTime"/>
+                        </h:outputText>
+
+                        <!-- Inhalt -->
+                        <p:outputLabel value="Inhalt:" style="font-weight: bold; vertical-align: top;"/>
+                        <p:outputPanel>
+                            <div style="white-space: pre-wrap; padding: 10px; background-color: #f8f9fa; border-radius: 5px; border: 1px solid #dee2e6;">
+                                <h:outputText value="#{noteDetailBean.note.content}"/>
+                            </div>
+                        </p:outputPanel>
+                    </h:panelGrid>
+                </p:panel>
+
+                <!-- Änderungshistorie -->
+                <p:panel header="Änderungshistorie (#{noteDetailBean.historyCount} Einträge)"
+                         style="margin-bottom: 20px;">
+
+                    <h:panelGroup rendered="#{noteDetailBean.hasHistory()}">
+                        <!-- Timeline-Darstellung als vertikale Liste -->
+                        <div class="history-timeline">
+                            <ui:repeat value="#{noteDetailBean.history}" var="historyEntry">
+                                <div class="timeline-item">
+                                    <div class="timeline-marker">
+                                        <i class="#{historyEntry.changeType.icon} timeline-icon"
+                                           style="color: #{historyEntry.changeType.name() == 'CREATED' ? '#4caf50' : (historyEntry.changeType.name() == 'UPDATED' ? '#ff9800' : '#f44336')};"/>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <p:card>
+                                            <h:panelGrid columns="1">
+                                                <h:outputText value="#{historyEntry.changeType.displayName}"
+                                                              styleClass="timeline-title"/>
+                                                <h:outputText value="#{historyEntry.changedAt}"
+                                                              styleClass="timeline-date">
+                                                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm:ss" type="localDateTime"/>
+                                                </h:outputText>
+                                            </h:panelGrid>
+                                        </p:card>
+                                    </div>
+                                </div>
+                            </ui:repeat>
+                        </div>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{!noteDetailBean.hasHistory()}">
+                        <p:messages>
+                            <p:message severity="info" summary="Keine Historie vorhanden"
+                                       detail="Für diese Notiz sind noch keine Änderungen protokolliert."/>
+                        </p:messages>
+                    </h:panelGroup>
+                </p:panel>
+            </h:panelGroup>
+
+            <!-- Fehlerfall: Notiz nicht gefunden -->
+            <h:panelGroup rendered="#{!noteDetailBean.hasNote()}">
+                <p:panel header="Fehler" styleClass="ui-panel-danger">
+                    <p:messages/>
+                    <p:button outcome="index" value="Zurück zur Liste"
+                              icon="pi pi-arrow-left"
+                              styleClass="ui-button-secondary"/>
+                </p:panel>
+            </h:panelGroup>
+
+        </h:form>
+    </ui:define>
+
+    <ui:define name="head">
+        <style>
+            .detail-label {
+                width: 200px;
+                padding: 10px;
+                vertical-align: top;
+            }
+
+            .detail-value {
+                padding: 10px;
+            }
+
+            /* Timeline Styles */
+            .history-timeline {
+                position: relative;
+                padding: 20px 0;
+            }
+
+            .timeline-item {
+                position: relative;
+                padding-left: 60px;
+                padding-bottom: 30px;
+                display: flex;
+                align-items: flex-start;
+            }
+
+            .timeline-item:not(:last-child)::before {
+                content: '';
+                position: absolute;
+                left: 20px;
+                top: 40px;
+                bottom: -10px;
+                width: 2px;
+                background: #e0e0e0;
+            }
+
+            .timeline-marker {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: white;
+                border: 3px solid #e0e0e0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1;
+            }
+
+            .timeline-icon {
+                font-size: 1.2rem;
+            }
+
+            .timeline-content {
+                flex: 1;
+                margin-left: 10px;
+            }
+
+            .timeline-title {
+                font-weight: bold;
+                font-size: 1.1em;
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            .timeline-date {
+                color: #666;
+                font-size: 0.9em;
+                display: block;
+            }
+        </style>
+    </ui:define>
+
+</ui:composition>

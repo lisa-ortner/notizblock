@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+    <!-- DataTable mit allen Notizen -->
+    <p:dataTable id="notesTable"
+                 var="note"
+                 value="#{noteBean.notes}"
+                 emptyMessage="Keine Notizen vorhanden"
+                 paginator="true"
+                 rows="10"
+                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 rowsPerPageTemplate="5,10,20"
+                 style="margin-top: 20px;">
+
+        <!-- Titel Spalte -->
+        <p:column headerText="Titel" sortBy="#{note.title}" filterBy="#{note.title}" filterMatchMode="contains">
+            <h:outputText value="#{note.title}" style="font-weight: bold;"/>
+        </p:column>
+
+        <!-- Inhalt Spalte (gekürzt) -->
+        <p:column headerText="Inhalt" style="width: 35%;">
+            <h:outputText value="#{note.getTruncatedContent(100)}"/>
+        </p:column>
+
+        <!-- Erstellungsdatum Spalte -->
+        <p:column headerText="Erstellt am" sortBy="#{note.createdAt}" style="width: 12%;">
+            <h:outputText value="#{note.createdAt}">
+                <f:convertDateTime pattern="dd.MM.yyyy HH:mm" type="localDateTime"/>
+            </h:outputText>
+        </p:column>
+
+        <!-- Aktionen Spalte -->
+        <p:column headerText="Aktionen" style="width: 200px; text-align: center;">
+            <!-- Detail Button -->
+            <p:button outcome="detail" icon="pi pi-search"
+                      title="Details anzeigen"
+                      styleClass="ui-button-info"
+                      style="margin-right: 5px;">
+                <f:param name="id" value="#{note.id}"/>
+            </p:button>
+
+            <!-- Bearbeiten Button -->
+            <p:commandButton icon="pi pi-pencil"
+                             title="Bearbeiten"
+                             styleClass="ui-button-warning"
+                             style="margin-right: 5px;"
+                             action="#{noteBean.prepareEditNote(note)}"
+                             update=":mainForm:noteDialogPanel"
+                             oncomplete="PF('noteDialog').show();"
+                             process="@this">
+                <f:setPropertyActionListener target="#{noteBean.currentNote}" value="#{note}"/>
+            </p:commandButton>
+
+            <!-- Löschen Button -->
+            <p:commandButton icon="pi pi-trash"
+                             title="Löschen"
+                             styleClass="ui-button-danger"
+                             update=":mainForm:deleteDialogPanel"
+                             oncomplete="PF('deleteDialog').show();"
+                             process="@this">
+                <f:setPropertyActionListener target="#{noteBean.currentNote}" value="#{note}"/>
+            </p:commandButton>
+        </p:column>
+    </p:dataTable>
+
+</ui:composition>

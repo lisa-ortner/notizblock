@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DataSource Konfiguration für WildFly Application Server
+  Diese Datei definiert die H2 In-Memory Datenbank als JTA DataSource
+-->
+<datasources xmlns="http://www.jboss.com/xml/ns/javaee"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.jboss.com/xml/ns/javaee
+             http://www.jboss.com/xml/ns/javaee/jboss-ds_7_0.xsd">
+
+    <datasource jndi-name="java:jboss/datasources/NotizblockDS"
+                pool-name="NotizblockDS"
+                enabled="true"
+                use-java-context="true">
+
+        <connection-url>jdbc:h2:mem:notizblockdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</connection-url>
+        <driver>h2</driver>
+        <security>
+            <user-name>sa</user-name>
+            <password></password>
+        </security>
+
+        <pool>
+            <min-pool-size>5</min-pool-size>
+            <max-pool-size>20</max-pool-size>
+        </pool>
+
+        <validation>
+            <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.novendor.NullValidConnectionChecker"/>
+            <background-validation>false</background-validation>
+        </validation>
+
+    </datasource>
+
+</datasources>

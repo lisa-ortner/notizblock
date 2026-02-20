@@ -1,0 +1,61 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="jakarta.faces.facelets">
+
+    <!-- Dialog für Erstellen/Bearbeiten -->
+    <p:dialog id="noteDialogPanel"
+              header="#{noteBean.editMode ? 'Notiz bearbeiten' : 'Neue Notiz erstellen'}"
+              widgetVar="noteDialog"
+              modal="true"
+              resizable="false"
+              width="600"
+              showEffect="fade"
+              hideEffect="fade">
+
+        <p:panelGrid columns="1" style="width: 100%;">
+            <!-- Titel -->
+            <p:outputLabel for="title" value="Titel:" style="font-weight: bold;"/>
+            <p:inputText id="title"
+                         value="#{noteBean.currentNote.title}"
+                         required="true"
+                         requiredMessage="Titel ist erforderlich"
+                         maxlength="255"
+                         style="width: 100%;">
+                <f:validateLength minimum="1" maximum="255"/>
+            </p:inputText>
+            <p:message for="title"/>
+
+            <!-- Inhalt -->
+            <p:outputLabel for="content" value="Inhalt:" style="font-weight: bold; margin-top: 10px;"/>
+            <p:inputTextarea id="content"
+                             value="#{noteBean.currentNote.content}"
+                             required="true"
+                             requiredMessage="Inhalt ist erforderlich"
+                             rows="10"
+                             maxlength="5000"
+                             autoResize="false"
+                             style="width: 100%;">
+                <f:validateLength minimum="1" maximum="5000"/>
+            </p:inputTextarea>
+            <p:message for="content"/>
+        </p:panelGrid>
+
+        <f:facet name="footer">
+            <p:commandButton value="Speichern"
+                             icon="pi pi-check"
+                             styleClass="ui-button-success"
+                             action="#{noteBean.saveNote}"
+                             update=":mainForm:notesTable :mainForm:messages"
+                             oncomplete="if (!args.validationFailed) PF('noteDialog').hide();"
+                             process=":mainForm:noteDialogPanel"/>
+
+            <p:commandButton value="Abbrechen"
+                             icon="pi pi-times"
+                             styleClass="ui-button-secondary"
+                             onclick="PF('noteDialog').hide(); return false;"
+                             type="button"/>
+        </f:facet>
+    </p:dialog>
+
+</ui:composition>
