@@ -1,6 +1,7 @@
 # Notizblock Webanwendung
 
-Eine vollständige Jakarta EE Webanwendung für die Verwaltung von Notizen mit JSF und PrimeFaces, inklusive Detailansicht und automatischer Änderungshistorie.
+Eine vollständige Jakarta EE Webanwendung für die Verwaltung von Notizen mit JSF und PrimeFaces, inklusive Detailansicht
+und automatischer Änderungshistorie.
 
 ## Tech-Stack
 
@@ -56,31 +57,33 @@ notizblock/
 ### 1. Notizen-Verwaltung (CRUD)
 
 #### Übersichtsseite (index.xhtml)
+
 - **Alle Notizen anzeigen** in interaktiver PrimeFaces DataTable
-  - Spalten: Titel, Inhalt (gekürzt), Erstellungsdatum
-  - Pagination (5, 10, 20 Einträge pro Seite)
-  - Sortierung und Filterung nach Titel
+    - Spalten: Titel, Inhalt (gekürzt), Erstellungsdatum
+    - Pagination (5, 10, 20 Einträge pro Seite)
+    - Sortierung und Filterung nach Titel
 
 - **Notiz erstellen**
-  - Button "Neue Notiz" öffnet Dialog
-  - Validierung für Titel und Inhalt
-  - AJAX-Update der Liste nach dem Speichern
+    - Button "Neue Notiz" öffnet Dialog
+    - Validierung für Titel und Inhalt
+    - AJAX-Update der Liste nach dem Speichern
 
 - **Notiz bearbeiten**
-  - Stift-Icon öffnet Dialog mit vorausgefüllten Daten
-  - AJAX-Update nach dem Speichern
+    - Stift-Icon öffnet Dialog mit vorausgefüllten Daten
+    - AJAX-Update nach dem Speichern
 
 - **Notiz löschen**
-  - Mülleimer-Icon zeigt Bestätigungsdialog
-  - AJAX-Update nach dem Löschen
+    - Mülleimer-Icon zeigt Bestätigungsdialog
+    - AJAX-Update nach dem Löschen
 
 - **Detail anzeigen**
-  - Lupen-Icon navigiert zur Detailseite
-  - Übergabe der Notiz-ID als Query-Parameter
+    - Lupen-Icon navigiert zur Detailseite
+    - Übergabe der Notiz-ID als Query-Parameter
 
 ### 2. Detailseite (detail.xhtml)
 
 Die Detailseite zeigt vollständige Informationen zu einer Notiz:
+
 - **Titel** - Vollständiger Titel
 - **Inhalt** - Kompletter Inhalt (ohne Kürzung)
 - **Erstellungsdatum** - Wann die Notiz erstellt wurde
@@ -90,31 +93,35 @@ Die Detailseite zeigt vollständige Informationen zu einer Notiz:
 ### 3. Änderungshistorie
 
 **Automatisches Tracking:**
+
 - Jede CRUD-Operation (Create, Update, Delete) wird automatisch in der `NoteHistory`-Tabelle protokolliert
 - Implementiert als transparenter Service im `NoteRepository`
 
 **Timeline-Darstellung:**
+
 - Vertikale Timeline mit allen Änderungen (älteste zuerst)
 - Farbcodierte Icons:
-  - 🟢 Grün: Notiz erstellt
-  - 🟠 Orange: Notiz bearbeitet
-  - 🔴 Rot: Notiz gelöscht
+    - 🟢 Grün: Notiz erstellt
+    - 🟠 Orange: Notiz bearbeitet
 - Zeitstempel für jede Änderung
 - CSS-basierte Timeline (kein externes Plugin erforderlich)
 
 ### 4. Komponentenbasierte Architektur
 
 **Facelets Template** (`layout/template.xhtml`):
+
 - Wiederverwendbares Layout mit Header, Content-Bereich und Footer
 - Konsistentes Design über alle Seiten
 - Responsive Navigation
 
 **Wiederverwendbare UI-Komponenten**:
+
 - `noteTable.xhtml` - DataTable mit allen Action-Buttons
 - `noteFormDialog.xhtml` - Erstellen/Bearbeiten Dialog
 - `deleteConfirmDialog.xhtml` - Lösch-Bestätigung
 
 **Vorteile**:
+
 - DRY-Prinzip (Don't Repeat Yourself)
 - Einfachere Wartung
 - Konsistente UI
@@ -151,6 +158,7 @@ mvn wildfly:deploy
 #### Variante 2: Manuelles Deployment
 
 1. WildFly starten:
+
 ```bash
 cd $WILDFLY_HOME/bin
 ./standalone.sh  # (Linux/Mac)
@@ -158,6 +166,7 @@ standalone.bat   # (Windows)
 ```
 
 2. WAR-Datei deployen:
+
 ```bash
 cp target/notizblock.war $WILDFLY_HOME/standalone/deployments/
 ```
@@ -172,6 +181,7 @@ cp target/notizblock.war $WILDFLY_HOME/standalone/deployments/
 Die H2 In-Memory Datenbank wird automatisch konfiguriert. Falls WildFly das H2-Modul nicht enthält:
 
 1. H2 JAR hinzufügen:
+
 ```bash
 # H2 Driver ins WildFly modules Verzeichnis kopieren
 mkdir -p $WILDFLY_HOME/modules/com/h2database/h2/main
@@ -180,6 +190,7 @@ cp ~/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar \
 ```
 
 2. `module.xml` erstellen in `$WILDFLY_HOME/modules/com/h2database/h2/main/`:
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="urn:jboss:module:1.9" name="com.h2database.h2">
@@ -194,7 +205,9 @@ cp ~/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar \
 ```
 
 3. Driver in `standalone.xml` registrieren (im `<drivers>` Abschnitt):
+
 ```xml
+
 <driver name="h2" module="com.h2database.h2">
     <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
 </driver>
@@ -214,6 +227,7 @@ http://localhost:8080/notizblock/detail?id=1   # Detailseite (Beispiel mit ID 1)
 Für die Entwicklung ist in `web.xml` der Project Stage auf `Development` gesetzt:
 
 ```xml
+
 <context-param>
     <param-name>jakarta.faces.PROJECT_STAGE</param-name>
     <param-value>Development</param-value>
@@ -221,6 +235,7 @@ Für die Entwicklung ist in `web.xml` der Project Stage auf `Development` gesetz
 ```
 
 Dies aktiviert:
+
 - Detaillierte Fehlermeldungen
 - Keine Caching von Facelets
 - Zusätzliche Debugging-Informationen
@@ -231,32 +246,32 @@ Für Produktion auf `Production` ändern.
 
 ### Note Entity
 
-| Feld | Typ | Beschreibung |
-|------|-----|--------------|
-| `id` | Long | Primary Key, auto-generiert |
-| `title` | String | Titel der Notiz (max. 255 Zeichen) |
-| `content` | String | Inhalt der Notiz (max. 5000 Zeichen) |
-| `createdAt` | LocalDateTime | Erstellungsdatum (automatisch via @PrePersist) |
+| Feld        | Typ           | Beschreibung                                        |
+|-------------|---------------|-----------------------------------------------------|
+| `id`        | Long          | Primary Key, auto-generiert                         |
+| `title`     | String        | Titel der Notiz (max. 255 Zeichen)                  |
+| `content`   | String        | Inhalt der Notiz (max. 5000 Zeichen)                |
+| `createdAt` | LocalDateTime | Erstellungsdatum (automatisch via @PrePersist)      |
 | `updatedAt` | LocalDateTime | Letztes Änderungsdatum (automatisch via @PreUpdate) |
 
 ### NoteHistory Entity
 
-| Feld | Typ | Beschreibung |
-|------|-----|--------------|
-| `id` | Long | Primary Key, auto-generiert |
-| `note` | Note | ManyToOne-Relation zur Notiz |
-| `changeType` | ChangeType | Enum: CREATED, UPDATED, DELETED |
-| `changedAt` | LocalDateTime | Zeitpunkt der Änderung (automatisch) |
+| Feld         | Typ           | Beschreibung                         |
+|--------------|---------------|--------------------------------------|
+| `id`         | Long          | Primary Key, auto-generiert          |
+| `note`       | Note          | ManyToOne-Relation zur Notiz         |
+| `changeType` | ChangeType    | Enum: CREATED, UPDATED, DELETED      |
+| `changedAt`  | LocalDateTime | Zeitpunkt der Änderung (automatisch) |
 
 ### ChangeType Enum
 
 ```java
 CREATED   // Notiz wurde erstellt
-UPDATED   // Notiz wurde bearbeitet
-DELETED   // Notiz wurde gelöscht
+        UPDATED   // Notiz wurde bearbeitet
 ```
 
 Jeder Wert hat:
+
 - `displayName` - Anzeigetext für die UI
 - `icon` - PrimeIcons CSS-Klasse
 
@@ -265,21 +280,26 @@ Jeder Wert hat:
 ### Architektur-Patterns
 
 **Repository Pattern:**
+
 - Trennung von Business-Logik und Datenzugriff
 - `NoteRepository` und `NoteHistoryRepository` kapseln alle DB-Operationen
 
 **Backing Bean Pattern:**
+
 - `NoteBean` (@ViewScoped) für Übersichtsseite
 - `NoteDetailBean` (@ViewScoped) für Detailseite mit ViewParam-Support
 
 **Component-Based UI:**
+
 - Facelets Template für konsistentes Layout
 - `<ui:composition>` und `<ui:include>` für Komponenten-Wiederverwendung
 
 ### Automatisches History-Tracking
 
 Implementierung in `NoteRepository`:
+
 ```java
+
 @Transactional
 public Note create(Note note) {
     entityManager.persist(note);
@@ -296,13 +316,15 @@ Bei jeder Operation (`create`, `update`, `delete`) wird automatisch ein History-
 Die Detailseite nutzt JSF ViewParams für die ID-Übergabe:
 
 ```xml
+
 <f:metadata>
     <f:viewParam name="id" value="#{noteDetailBean.id}" required="true"/>
     <f:viewAction action="#{noteDetailBean.init}"/>
 </f:metadata>
 ```
 
-**Wichtig**: Die `init()`-Methode wird über `<f:viewAction>` aufgerufen (nicht `@PostConstruct`), damit der ViewParameter bereits gebunden ist.
+**Wichtig**: Die `init()`-Methode wird über `<f:viewAction>` aufgerufen (nicht `@PostConstruct`), damit der
+ViewParameter bereits gebunden ist.
 
 ### Validierung
 
@@ -343,6 +365,7 @@ Die Detailseite nutzt JSF ViewParams für die ID-Übergabe:
 ### AJAX-Updates
 
 Alle Operationen nutzen AJAX für bessere UX:
+
 - `update=":mainForm:notesTable"` - Aktualisiert nur die Tabelle
 - `process="@this"` - Verarbeitet nur den Button
 - `oncomplete` - Callback nach erfolgreichem Update
@@ -350,26 +373,34 @@ Alle Operationen nutzen AJAX für bessere UX:
 ## Troubleshooting
 
 ### ClassNotFoundException für PrimeFaces
+
 Stelle sicher, dass PrimeFaces mit dem `jakarta` Classifier geladen wird:
+
 ```xml
+
 <classifier>jakarta</classifier>
 ```
 
 ### DataSource nicht gefunden
+
 Prüfe ob die JNDI-Namen in `persistence.xml` und `notizblock-ds.xml` übereinstimmen:
+
 ```
 java:jboss/datasources/NotizblockDS
 ```
 
 ### Hibernate DDL-Fehler
+
 Die `persistence.xml` nutzt `create-drop` für Development. Die Datenbank wird bei jedem Neustart neu erstellt.
 
 ### "Keine Notiz-ID angegeben" beim Öffnen der Detailseite
+
 - Stelle sicher, dass die URL den `id`-Parameter enthält: `detail.xhtml?id=1`
 - Prüfe, dass `<f:viewAction>` in der detail.xhtml vorhanden ist
 - Die `init()`-Methode darf NICHT `@PostConstruct` haben
 
 ### Timeline wird nicht angezeigt
+
 - CSS-Styles müssen im `<ui:define name="head">` Block sein
 - Browser-Cache leeren nach CSS-Änderungen
 
